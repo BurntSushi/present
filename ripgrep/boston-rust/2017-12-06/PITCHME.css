@@ -1,0 +1,13 @@
+.reveal pre code {
+  font-size: 0.7em;
+  line-height: 1.3em;
+}
+
+.reveal .slides {
+  text-align: left;
+}
+
+.reveal .slides section>* {
+  margin-left: 0;
+  margin-right: 0;
+}

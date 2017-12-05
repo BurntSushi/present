@@ -1,0 +1,4 @@
+vertical-center: false
+theme-override: ripgrep/boston-rust/2017-12-06/PITCHME.css
+highlight: googlecode
+published: true
