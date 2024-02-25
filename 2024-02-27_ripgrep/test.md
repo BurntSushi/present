@@ -1,23 +1,48 @@
 <!--
 theme: default
 paginate: true
-backgroundColor: aqua
+style: |
+  section {
+    justify-content: start;
+  }
 -->
 
 
-# Slide 1
+# ripgrep
 
-* Foo
-* Bar
-* Baz
+https://github.com/BurntSushi/ripgrep
+
+2024-02-27
+
+Andrew Gallant
 
 ---
 
-# Slide A
+# What is `grep`?
 
-- Foo
-- Bar
-- Baz
+```
+$ grep andrew /etc/passwd
+andrew:x:1000:100::/home/andrew:/bin/bash
+```
+
+**G**lobally search a **RE**gular expression and **P**rint
+
+---
+
+# What is ripgrep?
+
+```
+$ rg 'fn line_buffer'
+crates/searcher/src/searcher/mod.rs
+216:    fn line_buffer(&self) -> LineBuffer {
+```
+
+* Recursively search a directory.
+* By default, it ignores:
+  * Files that match your `.gitignore`, `.ignore` and `.rgignore`.
+  * Hidden files and directories.
+  * Binary files.
+* `rg -uuu` disables all automatic filtering.
 
 ---
 
@@ -35,20 +60,3 @@ fn main() -> anyhow::Result<()> {
 ---
 
 # Slide 3
-
-<section id="1">
-  <h1>Bullet list</h1>
-  <ul>
-    <li>One</li>
-    <li>Two</li>
-    <li>Three</li>
-  </ul>
-</section>
-<section id="2" data-marpit-fragments="3">
-  <h1>Fragmented list</h1>
-  <ul>
-    <li data-marpit-fragment="1">One</li>
-    <li data-marpit-fragment="2">Two</li>
-    <li data-marpit-fragment="3">Three</li>
-  </ul>
-</section>
