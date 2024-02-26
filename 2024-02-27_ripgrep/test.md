@@ -205,10 +205,72 @@ this point.
   foo
   bar
   ```
+* Finding literals can be _orders_ of magnitude faster than the regex engine.
 
 ---
 
 # SIMD (Single Instruction, Multiple Data)
+
+* Load a chunk of data (e.g., 16 bytes of a string) into one register.
+* Perform "blulk" operations using that register.
+* Can increase throughput dramatically.
+
+---
+
+# SIMD: sketch of `memchr`
+
+```rust
+let needle_vector = _mm_set1_epi8(b'z');
+let start_ptr = haystack.as_ptr();
+let end_ptr = start_ptr.add(haystack.len());
+let mut ptr = start_ptr;
+while ptr < end_ptr {
+    let chunk = _mm_load_si128(ptr as *const __m128i);
+    let chunk_eq = _mm_cmpeq_epi8(needle_vector, a);
+    if _mm_movemask_epi8(chunk_eq) != 0 {
+        let mut at = ptr - start_ptr;
+        let matching_offsets = _mm_movemask_epi8(chunk_eq);
+        return Some(matching_offsets.trailing_zeros());
+    }
+    ptr = ptr.add(16);
+}
+None
+```
+
+---
+
+# SIMD: frequency heuristic
+
+* Maximize amount of time spent in vector routines.
+* `z` is probably going to occur less frequently than `a`.
+* Use heuristic ranking of bytes to influence byte to use with `memchr`.
+
+---
+
+# SIMD: multiple literals (briefly)
+
+* Uses port of Teddy algorithm designed by Hyperscan authors.
+* Quickly identifies 1, 2, 3 or 4 byte prefixes.
+* Can be used with case insensitive regexes:
+  ```
+  $ regex-cli debug literal '(?i)abc'
+  ABC
+  ABc
+  AbC
+  Abc
+  aBC
+  aBc
+  abC
+  abc
+  ```
+
+---
+
+# Future?
+
+* More SIMD for bigger sets of literals.
+* Glushkov automata (no epsilon transitions!)
+* Indexing?
 
 ---
 
