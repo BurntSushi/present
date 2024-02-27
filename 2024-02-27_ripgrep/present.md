@@ -167,6 +167,7 @@ for result in WalkDir::new("./") {
 # Regex engine: NFAs versus DFAs
 
 * Equivalent in what they can express.
+* Epsilon transitions!
 * But from an engineering perspective, very different trade-offs!
 * NFAs are usually "simulated" with a virtual machine.
   * Easy to hack things into it, such as look-around and capturing groups.
@@ -193,7 +194,7 @@ this point.
 
 * Some regexes can be represented as a finite set of strings:
   ```
-  $ regex-cli debug literal --no-table 'ab?[yz]ghi'
+  $ regex-cli debug literal 'ab?[yz]ghi'
   abyghi
   abzghi
   ayghi
@@ -201,7 +202,7 @@ this point.
   ```
 * Others might have useful prefixes:
   ```
-  $ regex-cli debug literal --no-table '(foo|bar)\w+'
+  $ regex-cli debug literal '(foo|bar)\w+'
   foo
   bar
   ```
@@ -212,7 +213,7 @@ this point.
 # SIMD (Single Instruction, Multiple Data)
 
 * Load a chunk of data (e.g., 16 bytes of a string) into one register.
-* Perform "blulk" operations using that register.
+* Perform "bulk" operations using that register.
 * Can increase throughput dramatically.
 
 ---
@@ -226,11 +227,11 @@ let end_ptr = start_ptr.add(haystack.len());
 let mut ptr = start_ptr;
 while ptr < end_ptr {
     let chunk = _mm_load_si128(ptr as *const __m128i);
-    let chunk_eq = _mm_cmpeq_epi8(needle_vector, a);
+    let chunk_eq = _mm_cmpeq_epi8(needle_vector, chunk);
     if _mm_movemask_epi8(chunk_eq) != 0 {
         let mut at = ptr - start_ptr;
         let matching_offsets = _mm_movemask_epi8(chunk_eq);
-        return Some(matching_offsets.trailing_zeros());
+        return Some(at + matching_offsets.trailing_zeros());
     }
     ptr = ptr.add(16);
 }
@@ -244,6 +245,7 @@ None
 * Maximize amount of time spent in vector routines.
 * `z` is probably going to occur less frequently than `a`.
 * Use heuristic ranking of bytes to influence byte to use with `memchr`.
+* Given `aezio`, look for `z`.
 
 ---
 

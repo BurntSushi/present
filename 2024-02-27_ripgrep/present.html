@@ -226,7 +226,7 @@ src/civil/date.rs:            Date::from(Time::from_unix(-86_401, 0).unwrap()),
 <li data-marpit-fragment="4">Maintained as part of the Rust project. Available as the crate <code>regex</code>.</li>
 </ul>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="12" data-marpit-fragments="10" data-paginate="true" data-theme="default" data-style="section {
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="12" data-marpit-fragments="11" data-paginate="true" data-theme="default" data-style="section {
   justify-content: start;
 }
 " lang="en-US" data-marpit-pagination="12" style="--paginate:true;--theme:default;--style:section {
@@ -236,19 +236,20 @@ src/civil/date.rs:            Date::from(Time::from_unix(-86_401, 0).unwrap()),
 <h1 id="regex-engine-nfas-versus-dfas">Regex engine: NFAs versus DFAs</h1>
 <ul>
 <li data-marpit-fragment="1">Equivalent in what they can express.</li>
-<li data-marpit-fragment="2">But from an engineering perspective, very different trade-offs!</li>
-<li data-marpit-fragment="3">NFAs are usually &quot;simulated&quot; with a virtual machine.
+<li data-marpit-fragment="2">Epsilon transitions!</li>
+<li data-marpit-fragment="3">But from an engineering perspective, very different trade-offs!</li>
+<li data-marpit-fragment="4">NFAs are usually &quot;simulated&quot; with a virtual machine.
 <ul>
-<li data-marpit-fragment="4">Easy to hack things into it, such as look-around and capturing groups.</li>
-<li data-marpit-fragment="5">But, each character of input might visit all of the states in the NFA.</li>
-<li data-marpit-fragment="6">Can be constructed in time proportional to the size of the pattern.</li>
+<li data-marpit-fragment="5">Easy to hack things into it, such as look-around and capturing groups.</li>
+<li data-marpit-fragment="6">But, each character of input might visit all of the states in the NFA.</li>
+<li data-marpit-fragment="7">Can be constructed in time proportional to the size of the pattern.</li>
 </ul>
 </li>
-<li data-marpit-fragment="7">DFAs are usually implemented with a table of transitions.
+<li data-marpit-fragment="8">DFAs are usually implemented with a table of transitions.
 <ul>
-<li data-marpit-fragment="8">Hard to hack things into it.</li>
-<li data-marpit-fragment="9">Transition function is computed in a constant number of instructions.</li>
-<li data-marpit-fragment="10">Worst case construction time is exponential in the size of the pattern.</li>
+<li data-marpit-fragment="9">Hard to hack things into it.</li>
+<li data-marpit-fragment="10">Transition function is computed in a constant number of instructions.</li>
+<li data-marpit-fragment="11">Worst case construction time is exponential in the size of the pattern.</li>
 </ul>
 </li>
 </ul>
@@ -278,14 +279,14 @@ this point.</li>
 ;" data-marpit-pagination-total="20">
 <h1 id="regex-engine-literals">Regex engine: literals</h1>
 <ul>
-<li data-marpit-fragment="1">Some regexes can be represented as a finite set of strings:<pre is="marp-pre" data-auto-scaling="downscale-only"><code>$ regex-cli debug literal --no-table 'ab?[yz]ghi'
+<li data-marpit-fragment="1">Some regexes can be represented as a finite set of strings:<pre is="marp-pre" data-auto-scaling="downscale-only"><code>$ regex-cli debug literal 'ab?[yz]ghi'
 abyghi
 abzghi
 ayghi
 azghi
 </code></pre>
 </li>
-<li data-marpit-fragment="2">Others might have useful prefixes:<pre is="marp-pre" data-auto-scaling="downscale-only"><code>$ regex-cli debug literal --no-table '(foo|bar)\w+'
+<li data-marpit-fragment="2">Others might have useful prefixes:<pre is="marp-pre" data-auto-scaling="downscale-only"><code>$ regex-cli debug literal '(foo|bar)\w+'
 foo
 bar
 </code></pre>
@@ -303,7 +304,7 @@ bar
 <h1 id="simd-single-instruction-multiple-data">SIMD (Single Instruction, Multiple Data)</h1>
 <ul>
 <li data-marpit-fragment="1">Load a chunk of data (e.g., 16 bytes of a string) into one register.</li>
-<li data-marpit-fragment="2">Perform &quot;blulk&quot; operations using that register.</li>
+<li data-marpit-fragment="2">Perform &quot;bulk&quot; operations using that register.</li>
 <li data-marpit-fragment="3">Can increase throughput dramatically.</li>
 </ul>
 </section>
@@ -321,18 +322,18 @@ bar
 <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">ptr</span> = start_ptr;
 <span class="hljs-keyword">while</span> ptr &lt; end_ptr {
     <span class="hljs-keyword">let</span> <span class="hljs-variable">chunk</span> = _mm_load_si128(ptr <span class="hljs-keyword">as</span> *<span class="hljs-keyword">const</span> __m128i);
-    <span class="hljs-keyword">let</span> <span class="hljs-variable">chunk_eq</span> = _mm_cmpeq_epi8(needle_vector, a);
+    <span class="hljs-keyword">let</span> <span class="hljs-variable">chunk_eq</span> = _mm_cmpeq_epi8(needle_vector, chunk);
     <span class="hljs-keyword">if</span> _mm_movemask_epi8(chunk_eq) != <span class="hljs-number">0</span> {
         <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut </span><span class="hljs-variable">at</span> = ptr - start_ptr;
         <span class="hljs-keyword">let</span> <span class="hljs-variable">matching_offsets</span> = _mm_movemask_epi8(chunk_eq);
-        <span class="hljs-keyword">return</span> <span class="hljs-title function_ invoke__">Some</span>(matching_offsets.<span class="hljs-title function_ invoke__">trailing_zeros</span>());
+        <span class="hljs-keyword">return</span> <span class="hljs-title function_ invoke__">Some</span>(at + matching_offsets.<span class="hljs-title function_ invoke__">trailing_zeros</span>());
     }
     ptr = ptr.<span class="hljs-title function_ invoke__">add</span>(<span class="hljs-number">16</span>);
 }
 <span class="hljs-literal">None</span>
 </code></pre>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="17" data-marpit-fragments="3" data-paginate="true" data-theme="default" data-style="section {
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="17" data-marpit-fragments="4" data-paginate="true" data-theme="default" data-style="section {
   justify-content: start;
 }
 " lang="en-US" data-marpit-pagination="17" style="--paginate:true;--theme:default;--style:section {
@@ -344,6 +345,7 @@ bar
 <li data-marpit-fragment="1">Maximize amount of time spent in vector routines.</li>
 <li data-marpit-fragment="2"><code>z</code> is probably going to occur less frequently than <code>a</code>.</li>
 <li data-marpit-fragment="3">Use heuristic ranking of bytes to influence byte to use with <code>memchr</code>.</li>
+<li data-marpit-fragment="4">Given <code>aezio</code>, look for <code>z</code>.</li>
 </ul>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="18" data-marpit-fragments="3" data-paginate="true" data-theme="default" data-style="section {
