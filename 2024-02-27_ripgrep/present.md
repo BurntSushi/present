@@ -8,13 +8,22 @@ style: |
 -->
 
 
-# ripgrep
+# A broad view of why ripgrep is fast
 
 https://github.com/BurntSushi/ripgrep
 
 2024-02-27
 
 Andrew Gallant (aka BurntSushi)
+
+---
+
+# Background
+
+* Part of the Rust project for 9 years.
+  * Currently on the `libs-api` and `regex` teams.
+  * Primarily work on ecosystem libraries: `regex`, `memchr`, `bstr`, `csv`, `fst`, `ignore`, `walkdir`.
+* Work at Astral on improving Python tooling using Rust.
 
 ---
 
