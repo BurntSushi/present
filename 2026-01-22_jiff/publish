@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+
+SERVER="bs"
+DEST="/home/ubuntu/www/burntsushi.net/site/stuff/presentations"
+NAME="2026-01-22_boston-rust_jiff"
+
+marp present.md
+rscp present.html "$SERVER":"$DEST/$NAME.html"
+
+marp present.md --pdf
+rscp present.pdf "$SERVER":"$DEST/$NAME.pdf"
