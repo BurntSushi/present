@@ -66,7 +66,7 @@ Output:
 
 ---
 
-# Motivation
+# Why build another datetime library?
 
 * Hold that thought
 
@@ -224,17 +224,19 @@ Using largest units isn't reversible. For example:
 
 # Durations are aware of daylight saving time
 
-`2025-11-02` was not 24 hours long in New England:
 
 ```rust
 use jiff::{ToSpan, Zoned};
-
 fn main() -> anyhow::Result<()> {
+    // `2025-11-02` was not 24 hours long in New England
     let zdt1: Zoned = "2025-11-01T17:30[America/New_York]".parse()?;
+
     let zdt2 = &zdt1 + 1.day();
     println!("{zdt2}");
+
     let zdt3 = &zdt1 + 24.hours();
     println!("{zdt3}");
+
     Ok(())
 }
 ```
@@ -346,7 +348,7 @@ fn main() -> anyhow::Result<()> {
 * `2025-01-22T19:00-05:00[America/New_York]` is valid
 * `2025-01-22T19:00-04:00[America/New_York]` is invalid (Jiff parse error)
 * Losslessly roundtrip zoned datetimes
-* Spotty support: Temporal, `java.util.time`, `whenever` in Python
+* Spotty support: Temporal, `java.time`, `whenever` (Python)
 
 ---
 
@@ -381,13 +383,13 @@ fn main() -> anyhow::Result<()> {
 
 # Wrapping up: Not Supported
 
-* NO: leap seconds
-* NO: locale
-* NO: non-Gregorian calendars
+* Leap seconds
+* Localization
+* Non-Gregorian calendars
 
 ---
 
-# Motivation
+# Why build another datetime library?
 
 * Existing popular datetime libraries: `chrono` and `time`
 * API in a stalled "local maximum" (particularly `chrono`)

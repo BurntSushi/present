@@ -82,7 +82,7 @@
   justify-content: start;
 }
 ;" data-marpit-pagination-total="21">
-<h1 id="motivation">Motivation</h1>
+<h1 id="why-build-another-datetime-library">Why build another datetime library?</h1>
 <ul>
 <li data-marpit-fragment="1">Hold that thought</li>
 </ul>
@@ -226,15 +226,17 @@ minutes, seconds, milliseconds, microseconds and nanoseconds.</li>
 }
 ;" data-marpit-pagination-total="21">
 <h1 id="durations-are-aware-of-daylight-saving-time">Durations are aware of daylight saving time</h1>
-<p><code>2025-11-02</code> was not 24 hours long in New England:</p>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-rust"><span class="hljs-keyword">use</span> jiff::{ToSpan, Zoned};
-
 <span class="hljs-keyword">fn</span> <span class="hljs-title function_">main</span>() <span class="hljs-punctuation">-&gt;</span> anyhow::<span class="hljs-type">Result</span>&lt;()&gt; {
+    <span class="hljs-comment">// `2025-11-02` was not 24 hours long in New England</span>
     <span class="hljs-keyword">let</span> <span class="hljs-variable">zdt1</span>: Zoned = <span class="hljs-string">&quot;2025-11-01T17:30[America/New_York]&quot;</span>.<span class="hljs-title function_ invoke__">parse</span>()?;
+
     <span class="hljs-keyword">let</span> <span class="hljs-variable">zdt2</span> = &amp;zdt1 + <span class="hljs-number">1</span>.<span class="hljs-title function_ invoke__">day</span>();
     <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;{zdt2}&quot;</span>);
+
     <span class="hljs-keyword">let</span> <span class="hljs-variable">zdt3</span> = &amp;zdt1 + <span class="hljs-number">24</span>.<span class="hljs-title function_ invoke__">hours</span>();
     <span class="hljs-built_in">println!</span>(<span class="hljs-string">&quot;{zdt3}&quot;</span>);
+
     <span class="hljs-title function_ invoke__">Ok</span>(())
 }
 </code></pre>
@@ -355,7 +357,7 @@ minutes, seconds, milliseconds, microseconds and nanoseconds.</li>
 <li data-marpit-fragment="3"><code>2025-01-22T19:00-05:00[America/New_York]</code> is valid</li>
 <li data-marpit-fragment="4"><code>2025-01-22T19:00-04:00[America/New_York]</code> is invalid (Jiff parse error)</li>
 <li data-marpit-fragment="5">Losslessly roundtrip zoned datetimes</li>
-<li data-marpit-fragment="6">Spotty support: Temporal, <code>java.util.time</code>, <code>whenever</code> in Python</li>
+<li data-marpit-fragment="6">Spotty support: Temporal, <code>java.time</code>, <code>whenever</code> (Python)</li>
 </ul>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="19" data-marpit-fragments="3" data-paginate="true" data-theme="default" data-style="section {
@@ -367,9 +369,9 @@ minutes, seconds, milliseconds, microseconds and nanoseconds.</li>
 ;" data-marpit-pagination-total="21">
 <h1 id="wrapping-up-not-supported">Wrapping up: Not Supported</h1>
 <ul>
-<li data-marpit-fragment="1">NO: leap seconds</li>
-<li data-marpit-fragment="2">NO: locale</li>
-<li data-marpit-fragment="3">NO: non-Gregorian calendars</li>
+<li data-marpit-fragment="1">Leap seconds</li>
+<li data-marpit-fragment="2">Localization</li>
+<li data-marpit-fragment="3">Non-Gregorian calendars</li>
 </ul>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="20" data-marpit-fragments="6" data-paginate="true" data-theme="default" data-style="section {
@@ -379,7 +381,7 @@ minutes, seconds, milliseconds, microseconds and nanoseconds.</li>
   justify-content: start;
 }
 ;" data-marpit-pagination-total="21">
-<h1 id="motivation-1">Motivation</h1>
+<h1 id="why-build-another-datetime-library-1">Why build another datetime library?</h1>
 <ul>
 <li data-marpit-fragment="1">Existing popular datetime libraries: <code>chrono</code> and <code>time</code></li>
 <li data-marpit-fragment="2">API in a stalled &quot;local maximum&quot; (particularly <code>chrono</code>)</li>
