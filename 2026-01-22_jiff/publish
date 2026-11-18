@@ -2,7 +2,7 @@
 
 set -e
 
-SERVER="bs"
+SERVER="burntsushi.net"
 DEST="/home/ubuntu/www/burntsushi.net/site/stuff/presentations"
 NAME="2026-01-22_boston-rust_jiff"
 

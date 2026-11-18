@@ -53,7 +53,7 @@ Program:
 
 ```rust
 fn main() {
-    let now = jiff::Zoned::now();
+    let now = jiff::ZonedDateTime::now();
     println!("{now:?}");
 }
 ```
@@ -97,7 +97,7 @@ Friday
 use jiff::ToSpan;
 
 fn main() -> anyhow::Result<()> {
-    let now = jiff::Zoned::now();
+    let now = jiff::ZonedDateTime::now();
     let birthday = now.with().month(7).day(5).build()?;
     for zdt in birthday.series(1.year()).filter(|x| x >= now).take(5) {
         println!("{} {:?}", zdt.date(), zdt.weekday());
@@ -116,14 +116,14 @@ fn main() -> anyhow::Result<()> {
 
 ---
 
-# What is a `Zoned`?
+# What is a `ZonedDateTime`?
 
 ```rust
-use jiff::{tz::TimeZone, Timestamp, Zoned};
+use jiff::{tz::TimeZone, Timestamp, ZonedDateTime};
 
 fn main() -> anyhow::Result<()> {
     let timestamp = Timestamp::UNIX_EPOCH;
-    let zdt = Zoned::new(timestamp, TimeZone::UTC);
+    let zdt = ZonedDateTime::new(timestamp, TimeZone::UTC);
     println!("{zdt}");
     let zdt = zdt.in_tz("America/New_York")?;
     println!("{zdt}");
@@ -149,7 +149,7 @@ use jiff::civil;
 
 fn main() -> anyhow::Result<()> {
     let dob = const { civil::date(1987, 7, 5) }.in_tz("America/New_York")?;
-    let now = jiff::Zoned::now();
+    let now = jiff::ZonedDateTime::now();
     let age = now.since(&dob)?;
     println!("{age:#}");
     Ok(())
@@ -169,7 +169,7 @@ use jiff::civil;
 
 fn main() -> anyhow::Result<()> {
     let dob = const { civil::date(1987, 7, 5) }.in_tz("America/New_York")?;
-    let now = jiff::Zoned::now();
+    let now = jiff::ZonedDateTime::now();
     let age = now.since((jiff::Unit::Year, &dob))?;
     println!("{age:#}");
     Ok(())
@@ -201,8 +201,8 @@ fn main() -> anyhow::Result<()> {
 
 Using largest units isn't reversible. For example:
 
-* `let zdt1: Zoned = "2024-03-02[America/New_York]".parse()?;`
-* `let zdt2: Zoned = "2024-05-01[America/New_York]".parse()?;`
+* `let zdt1: ZonedDateTime = "2024-03-02[America/New_York]".parse()?;`
+* `let zdt2: ZonedDateTime = "2024-05-01[America/New_York]".parse()?;`
 * `let span = zdt1.until((Unit::Year, &zdt2))?;`
 * `"1 month 29 days"`
 * `let zdt = zdt2 - span;`
@@ -212,8 +212,8 @@ Using largest units isn't reversible. For example:
 
 # Limiting durations to hours provides reversibility
 
-* `let zdt1: Zoned = "2024-03-02[America/New_York]".parse()?;`
-* `let zdt2: Zoned = "2024-05-01[America/New_York]".parse()?;`
+* `let zdt1: ZonedDateTime = "2024-03-02[America/New_York]".parse()?;`
+* `let zdt2: ZonedDateTime = "2024-05-01[America/New_York]".parse()?;`
 * `let span = zdt1.until(&zdt2)?;`
 * `"1439 hours"`
 * `let zdt = zdt2 - span;`
@@ -329,7 +329,7 @@ use jiff::civil;
 fn main() -> anyhow::Result<()> {
     let tz = jiff::tz::TimeZone::system();
     let datetime = civil::date(2026, 11, 1).at(1, 30, 0, 0);
-    let zdt = tz.to_ambiguous_zoned(datetime).later()?;
+    let zdt = tz.to_ambiguous_zoned_datetime(datetime).later()?;
     println!("{}", zdt.strftime("%Y-%m-%d %H:%M%P %:z"));
     Ok(())
 }
